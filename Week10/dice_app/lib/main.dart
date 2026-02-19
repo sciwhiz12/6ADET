@@ -33,6 +33,7 @@ class DiceHomePage extends StatefulWidget {
 class _DiceHomePageState extends State<DiceHomePage> {
   int diceA = 1;
   int diceB = 1;
+  int total = 2;
   final Random random = Random();
 
   void rollDice() {
@@ -40,6 +41,7 @@ class _DiceHomePageState extends State<DiceHomePage> {
       // 1 to 6
       diceA = random.nextInt(6) + 1;
       diceB = random.nextInt(6) + 1;
+      total = diceA + diceB;
     });
   }
 
@@ -73,8 +75,17 @@ class _DiceHomePageState extends State<DiceHomePage> {
             ]
           ),
           Text(
-            "Total: ${diceA + diceB}",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)
+            "Total: $total",
+            style: TextStyle(
+              fontSize: 24, 
+              fontWeight: FontWeight.w500,
+              color: 
+                total < 6 
+                  ? Colors.red.shade800 // < 6
+                  : total > 6
+                    ? Colors.blue.shade800 // > 6
+                    : Colors.yellow.shade800 // = 6
+            )
           ),
           FilledButton(onPressed: rollDice, child: const Text('Roll Dice')),
         ],

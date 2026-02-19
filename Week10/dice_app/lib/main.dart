@@ -59,9 +59,7 @@ class _DiceHomePageState extends State<DiceHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Flutter Dice App')
-    ),
+    appBar: AppBar(title: const Text('Flutter Dice App')),
     body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -72,22 +70,26 @@ class _DiceHomePageState extends State<DiceHomePage> {
             children: [
               Image.asset('assets/images/dice-$diceA.png', width: 160),
               Image.asset('assets/images/dice-$diceB.png', width: 160),
-            ]
+            ],
           ),
           Text(
             "Total: $total",
             style: TextStyle(
-              fontSize: 24, 
+              fontSize: 24,
               fontWeight: FontWeight.w500,
-              color: 
-                total < 6 
-                  ? Colors.red.shade800 // < 6
+              color: total < 6
+                  ? Colors
+                        .red
+                        .shade800 // < 6
                   : total > 6
-                    ? Colors.blue.shade800 // > 6
-                    : Colors.yellow.shade800 // = 6
-            )
+                  ? Colors
+                        .blue
+                        .shade800 // > 6
+                  : Colors.yellow.shade800, // = 6
+            ),
           ),
           FilledButton(onPressed: rollDice, child: const Text('Roll Dice')),
+          Text(total == 7 ? "Congratulations! You won the jackpot!" : "", style: TextStyle(fontSize: 16)),
         ],
       ),
     ),

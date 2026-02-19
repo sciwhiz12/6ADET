@@ -6,6 +6,7 @@
 */
 
 import 'dart:math';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -35,6 +36,19 @@ class _DiceHomePageState extends State<DiceHomePage> {
   int diceB = 1;
   int total = 2;
   final Random random = Random();
+  late ConfettiController confetti;
+
+  @override
+  void initState() {
+    super.initState();
+    confetti = ConfettiController(duration: Duration(seconds: 5));
+  }
+
+  @override
+  void dispose() {
+    confetti.dispose();
+    super.dispose();
+  }
 
   void rollDice() {
     setState(() {
@@ -43,6 +57,9 @@ class _DiceHomePageState extends State<DiceHomePage> {
       diceB = random.nextInt(6) + 1;
       total = diceA + diceB;
     });
+    if (total == 7) {
+      confetti.play();
+    }
   }
 
   @override
@@ -60,38 +77,56 @@ class _DiceHomePageState extends State<DiceHomePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('Flutter Dice App')),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 24,
-        children: [
-          Row(
+    body: Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter, 
+          child: ConfettiWidget(
+            confettiController: confetti,
+            blastDirection: pi / 2,
+            numberOfParticles: 60,
+            minBlastForce: 10,
+            maxBlastForce: 20,
+            gravity: 0.6,
+          )
+        ),
+        Center(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 24,
             children: [
-              Image.asset('assets/images/dice-$diceA.png', width: 160),
-              Image.asset('assets/images/dice-$diceB.png', width: 160),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/dice-$diceA.png', width: 160),
+                  Image.asset('assets/images/dice-$diceB.png', width: 160),
+                ],
+              ),
+              Text(
+                "Total: $total",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: total < 6
+                      ? Colors
+                            .red
+                            .shade800 // < 6
+                      : total > 6
+                      ? Colors
+                            .blue
+                            .shade800 // > 6
+                      : Colors.yellow.shade800, // = 6
+                ),
+              ),
+              FilledButton(onPressed: rollDice, child: const Text('Roll Dice')),
+              Text(
+                total == 7 ? "Congratulations! You won the jackpot!" : "",
+                style: TextStyle(fontSize: 16),
+              ),
             ],
           ),
-          Text(
-            "Total: $total",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: total < 6
-                  ? Colors
-                        .red
-                        .shade800 // < 6
-                  : total > 6
-                  ? Colors
-                        .blue
-                        .shade800 // > 6
-                  : Colors.yellow.shade800, // = 6
-            ),
-          ),
-          FilledButton(onPressed: rollDice, child: const Text('Roll Dice')),
-          Text(total == 7 ? "Congratulations! You won the jackpot!" : "", style: TextStyle(fontSize: 16)),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
